@@ -1,13 +1,115 @@
 /* page.module.css */
-.testBox {
-  background-color: white;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  margin: 1rem 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  height: 100px;        /* fixed height just for testing */
+.MainContainer {
+  padding: 1rem 1.25rem;
   display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1rem;
+  h1,
+  h2,
+  h3 {
+    color: #000000;
+  }
+}
+
+.TextBox {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 3px;
+}
+
+/* ////////////////////////////////////// */
+.inputBox {
+  width: 100%;
+  display: flex;
+  margin: 0.25rem 0;
+
+  /* border-color: rgba(183, 183, 183, 0.75); */
+  border-radius: 0.25rem;
+  background-color: rgba(75, 75, 75, 0.75);
+  border-color: rgba(183, 183, 183, 0.75);
+}
+
+.input {
+  width: 100%;
+  height: 1.5rem;
+  background-color: transparent;
+  padding-inline: 0.25rem;
+  
+  font-size: 10px;
+  font-weight: normal;
+  color: #ffffff;
+  font-family: "Geist";
+
+  border-radius: 0.25rem;
+  border: 0px;
+}
+
+/* Save button */
+.SaveButton {
+  height: 1.5rem;
+  padding-inline: .75rem;
+
+  transition: 1s;
+  
+  background-color: rgba(75, 75, 75, 0.75);
+  border-radius: 0.25rem;
+  border-width: 0px;
+
+  h1 {
+    font-weight: bold;
+    color: #ffffff;
+  }
+}
+.SaveButton:hover {
+  background-color: rgba(44, 53, 219, 0.75);
+  border-color: rgba(183, 183, 183, 0.75);
+}
+/* ////////////////////////////////////// */
+
+.TextBoxWithButton {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-weight: bold;
+  gap: 3px;
+}
+
+.Text {
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 3px;
+}
+
+.AboutButton {
+  text-decoration: none;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  transition: 1s;
+
+  border-radius: 0.25rem;
+  background-color: rgba(75, 75, 75, 0.75);
+  border-color: rgba(183, 183, 183, 0.75);
+  /* border: 1px; */
+
+  h2 {
+    color: #ffffff;
+  }
+}
+
+.AboutButton:hover {
+  background-color: rgba(44, 53, 219, 0.75);
+  border-color: rgba(183, 183, 183, 0.75);
 }

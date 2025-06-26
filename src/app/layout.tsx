@@ -6,17 +6,21 @@ import "./globals.css";
 import styles from "./layout.module.css";
 import Aurora from "../components/Backgrounds/Aurora/Aurora";
 import Image from 'next/image';
+import { Geist } from 'next/font/google'
 
+const geist = Geist({
+  subsets: ['latin'],
+})
 
 export const metadata: Metadata = {
   title: "MediConnectDigital",
   description: "Navigate foreign healthcare environments with confidence",
-  icons: { icon: "/images/favicon.png" },
+  icons: { icon: "/images/logoFavicon.png" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={geist.className}>
       <body>
         {/* 1) Background layer */}
         <div className={styles.background}>
@@ -29,60 +33,39 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
 
         {/* 2) Main content container */}
+        <div className={styles.containerWrapper}>
         <div className={styles.container}>
           
+          <div className={styles.HeaderAndMain}>
+
+            {/* 1) Header */}
+            <div className={styles.header}>
+              <div className={styles.LogoTitleMoto}>
+                <Image
+                  src="/images/logoFavicon.png"
+                  alt="Medi Connect Digital Logo"
+                  width={40}    // change to your desired display width
+                  height={40}   // change to your desired display height
+                  className={styles.logo}
+                  />
+              <div className={styles.TitleMoto}>
 
 
+                <h3>Medi Connect Digital</h3>
+                <h2>To navigate healthcare abroad</h2>
+            </div>
+                </div>
+              <h1>This application is for demonstration purposes only and not for medical advice. Always consult a doctor when making decisions.</h1>
+            </div>
 
-
-
-
-
-
-
-
-
-          {/* 1) Header */}
-          <header className={styles.header}>
-            <div className={styles.LogoTitleMoto}>
-              <Image
-                src="/images/MDlogo_White.png"
-                alt="Medi Connect Digital Logo"
-                width={40}    // change to your desired display width
-                height={40}   // change to your desired display height
-                className={styles.logo}
-                />
-            <div className={styles.TitleMoto}>
-
-
-              <h3>Medi Connect Digital</h3>
-              <h2>To navigate healthcare abroad</h2>
+            {/* 2) Main content area */}
+            <div>{children}</div>
+                  
           </div>
-              </div>
-            <h1>This application is for demonstration purposes and not for medical advice. Always consult a healthcare professional before making any decisions.</h1>
-          </header>
-
-
-
-
-
-
-
-
-
-
-
-          {/* 2) Main content area */}
-          <main className={styles.main}>{children}</main>
-
-
-
 
           {/* 3) Navigation bar */}
-          <nav className={styles.navbar}>
-            <Link href="/search">
-              
-              <div className={styles.navItem}>
+          <div className={styles.NavBar}>
+            <Link href="/search" className={styles.NavItem}>
                 <Image
                 src="/images/searchIcon.png"
                 alt="search icon"
@@ -90,11 +73,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 height={40}
                 />
                 <h2>Search</h2>
-              </div>
             </Link>
-            <Link href="/">
-              
-              <div className={styles.navItem}>
+
+            <Link href="/" className={styles.NavItem}>
                 <Image
                 src="/images/homeIcon.png"
                 alt="home icon"
@@ -102,10 +83,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 height={40}
                 />
                 <h2>Home</h2>
-              </div>
             </Link>
-            <Link href="/locate">
-              <div className={styles.navItem}>
+
+            <Link href="/locate" className={styles.NavItem}>
                 <Image
                 src="/images/locateIcon.png"
                 alt="locate icon"
@@ -113,12 +93,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 height={40}
                 />
                 <h2>Locate</h2>
-              </div>
             </Link>
-          </nav>
 
+          </div>
         
-        
+        </div>
         </div>
       </body>
     </html>
