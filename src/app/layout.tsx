@@ -1,4 +1,5 @@
 // src/app/layout.tsx
+import React from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
@@ -41,23 +42,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 
 
-          {/* Header */}
+          {/* 1) Header */}
           <header className={styles.header}>
             <div className={styles.LogoTitleMoto}>
-            <Image
-              src="/images/MDlogo_White.png"
-              alt="Medi Connect Digital Logo"
-              width={60}    // change to your desired display width
-              height={50}   // change to your desired display height
-              />
+              <Image
+                src="/images/MDlogo_White.png"
+                alt="Medi Connect Digital Logo"
+                width={40}    // change to your desired display width
+                height={40}   // change to your desired display height
+                className={styles.logo}
+                />
             <div className={styles.TitleMoto}>
 
 
-              <h3 className={styles.title}>Medi Connect Digital</h3>
-              <h2 className={styles.motto}>To help you navigate healthcare abroad</h2>
+              <h3>Medi Connect Digital</h3>
+              <h2>To navigate healthcare abroad</h2>
           </div>
               </div>
-            <h1 className={styles.warning}>This application is for demonstration purposes only and does not constitute medical advice. Always consult a qualified healthcare professional before making any treatment decisions.</h1>
+            <h1>This application is for demonstration purposes and not for medical advice. Always consult a healthcare professional before making any decisions.</h1>
           </header>
 
 
@@ -70,18 +72,48 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 
 
-
+          {/* 2) Main content area */}
           <main className={styles.main}>{children}</main>
 
+
+
+
+          {/* 3) Navigation bar */}
           <nav className={styles.navbar}>
             <Link href="/search">
-              <div className={styles.navItem}>Search</div>
+              
+              <div className={styles.navItem}>
+                <Image
+                src="/images/searchIcon.png"
+                alt="search icon"
+                width={40}
+                height={40}
+                />
+                <h2>Search</h2>
+              </div>
             </Link>
             <Link href="/">
-              <div className={styles.navItem}>Home</div>
+              
+              <div className={styles.navItem}>
+                <Image
+                src="/images/homeIcon.png"
+                alt="home icon"
+                width={40}
+                height={40}
+                />
+                <h2>Home</h2>
+              </div>
             </Link>
             <Link href="/locate">
-              <div className={styles.navItem}>Locate</div>
+              <div className={styles.navItem}>
+                <Image
+                src="/images/locateIcon.png"
+                alt="locate icon"
+                width={30}
+                height={40}
+                />
+                <h2>Locate</h2>
+              </div>
             </Link>
           </nav>
 
