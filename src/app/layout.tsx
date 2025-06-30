@@ -67,7 +67,7 @@ export default function RootLayout({
               </div>
 
               {/* 2) Main content area */}
-              <div>{children}</div>
+              {children}
             </div>
 
             {/* 3) Navigation bar */}
@@ -76,8 +76,8 @@ export default function RootLayout({
                 <Image
                   src="/images/searchIcon.png"
                   alt="search icon"
-                  width={40}
-                  height={40}
+                  width={30}
+                  height={30}
                 />
                 <h2>Search</h2>
               </Link>
@@ -86,8 +86,8 @@ export default function RootLayout({
                 <Image
                   src="/images/homeIcon.png"
                   alt="home icon"
-                  width={40}
-                  height={40}
+                  width={30}
+                  height={30}
                 />
                 <h2>Home</h2>
               </Link>
@@ -96,8 +96,8 @@ export default function RootLayout({
                 <Image
                   src="/images/locateIcon.png"
                   alt="locate icon"
-                  width={30}
-                  height={40}
+                  width={25}
+                  height={30}
                 />
                 <h2>Locate</h2>
               </Link>

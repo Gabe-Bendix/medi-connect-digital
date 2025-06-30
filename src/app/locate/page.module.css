@@ -1,0 +1,127 @@
+/* page.module.css */
+.MainContainer {
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.MainContainer h1,
+.MainContainer h2,
+.MainContainer h3 {
+  color: #000000;
+}
+
+.TextBox {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 3px;
+  
+}
+
+/* Map container box */
+.MapBox {
+  width: 100%;
+  max-width: 36rem;
+  height: 50vh;
+  margin: 0 auto;
+  background: white;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Info box under the map */
+.InfoBox {
+  width: 100%;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  p {
+    color: #000000;
+  }
+}
+
+.infoTitle {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.infoText {
+  margin: 0.5rem 0 0;
+  font-size: 1rem;
+  color: #374151;
+  line-height: 1.5;
+}
+
+/* Warning message box */
+.warning {
+  color: #b91c1c;
+  font-weight: 500;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Existing button/text‐box styles below */
+
+.TextBoxWithButton {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.PostButton {
+  text-decoration: none;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  transition: 1s;
+  border-radius: 0.25rem;
+  background-color: rgba(75, 75, 75, 0.75);
+  border-color: rgba(183, 183, 183, 0.75);
+}
+
+.PostButton h2 {
+  margin: 0;
+  color: #ffffff;
+}
+
+.PostButton:hover {
+  background-color: rgba(44, 53, 219, 0.75);
+  border-color: rgba(183, 183, 183, 0.75);
+}
+
+.photo {
+  display: flex;
+  overflow: hidden;
+  align-self: center;
+  border-radius: 20px;
+}
+
+.pharmaLabel {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
