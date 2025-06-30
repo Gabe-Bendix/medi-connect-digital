@@ -108,14 +108,16 @@ export default function LocatePage() {
         // 2) Initialize with that type (or null)
         let best: PharmacyBest | null = null;
 
-        elems.forEach((el: any) => {
+        // 3) Use for…of so TS can narrow best inside the loop
+        for (const el of elems as any[]) {
           const coord: [number, number] = el.lat
             ? [el.lat, el.lon]
             : [el.center.lat, el.center.lon];
+
           if (!best || dist(userPos, coord) < dist(userPos, best.coord)) {
             best = { coord, tags: el.tags };
           }
-        });
+        }
 
         if (best) {
           setPharmaPos(best.coord);
