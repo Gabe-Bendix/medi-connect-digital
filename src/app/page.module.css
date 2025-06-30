@@ -112,3 +112,8 @@
   background-color: rgba(44, 53, 219, 0.75);
   border-color: rgba(183, 183, 183, 0.75);
 }
+
+.CurrentLocationButton {
+  display: flex;
+  align-self: center;
+}

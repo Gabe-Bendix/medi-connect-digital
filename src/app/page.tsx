@@ -1,20 +1,66 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 import styles from "./page.module.css";
 import Link from "next/link";
 
 export default function Home() {
-  const [address, setAddress] = useState("")
+  const [address, setAddress] = useState(
+    typeof window !== "undefined"
+      ? localStorage.getItem("mediConnectAddress") || ""
+      : ""
+  );
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const saveAddress = (addr: string) => {
+    localStorage.setItem("mediConnectAddress", addr);
+    setAddress(addr);
+    alert("Address saved!");
+  };
 
   const handleSaveAddress = () => {
     if (!address.trim()) {
-      alert("Please enter an address first.")
-      return
+      alert("Please enter an address first.");
+      return;
     }
-    localStorage.setItem("mediConnectAddress", address)
-    alert("Address saved!")
-  }
+    saveAddress(address);
+  };
+
+  const handleUseMyLocation = () => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported by your browser.");
+      return;
+    }
+    setError(null);
+    setLoading(true);
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        try {
+          const resp = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
+            { headers: { "User-Agent": "MediConnectDigital/1.0" } }
+          );
+          const data = await resp.json();
+          if (data.display_name) {
+            saveAddress(data.display_name);
+          } else {
+            setError("Could not determine address from your location.");
+          }
+        } catch {
+          setError("Reverse geocoding failed.");
+        } finally {
+          setLoading(false);
+        }
+      },
+      () => {
+        setError("Unable to retrieve your location.");
+        setLoading(false);
+      }
+    );
+  };
 
   return (
     <div className={styles.MainContainer}>
@@ -38,19 +84,28 @@ export default function Home() {
             placeholder="Hardenbergstraße 16-18, 10623 Berlin, Germany..."
             value={address}
             onChange={(e) => setAddress(e.target.value)}
+            disabled={loading}
           />
           <button
             className={styles.SaveButton}
             onClick={handleSaveAddress}
+            disabled={loading}
           >
             <h1>Save</h1>
           </button>
         </div>
-
-        <h1>
-          Enter in any address and press save to try it out!
-        </h1>
+        <h1>Enter in any address and press save to try it out! Or...</h1>
+        <div className={styles.CurrentLocationButton}>
+          <button
+            className={styles.SaveButton}
+            onClick={handleUseMyLocation}
+            disabled={loading}
+          >
+            <h1>{loading ? "Locating…" : "Use Current Location"}</h1>
+          </button>
+        </div>
       </div>
+      {error && <p className={styles.error}>{error}</p>}
 
       <div className={styles.TextBoxWithButton}>
         <div className={styles.Text}>
@@ -66,4 +121,3 @@ export default function Home() {
     </div>
   );
 }
-
