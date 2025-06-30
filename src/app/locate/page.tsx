@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -68,6 +67,7 @@ export default function LocatePage() {
       );
       out center;
     `;
+
     fetch("https://overpass-api.de/api/interpreter", {
       method: "POST",
       headers: {
@@ -83,6 +83,7 @@ export default function LocatePage() {
           setError("⚠️ No pharmacies found nearby.");
           return;
         }
+
         // Haversine to pick closest
         const toRad = (d: number) => (d * Math.PI) / 180;
         function dist(a: [number, number], b: [number, number]) {
@@ -97,7 +98,16 @@ export default function LocatePage() {
           const c = 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
           return R * c;
         }
-        let best: { coord: [number, number]; tags: any } | null = null;
+
+        // 1) Define the shape for our “best” candidate
+        type PharmacyBest = {
+          coord: [number, number];
+          tags: any;
+        };
+
+        // 2) Initialize with that type (or null)
+        let best: PharmacyBest | null = null;
+
         elems.forEach((el: any) => {
           const coord: [number, number] = el.lat
             ? [el.lat, el.lon]
@@ -106,9 +116,11 @@ export default function LocatePage() {
             best = { coord, tags: el.tags };
           }
         });
+
         if (best) {
           setPharmaPos(best.coord);
           setPharmaName(best.tags.name || "Unnamed Pharmacy");
+
           // reconstruct address if possible
           const parts: string[] = [];
           if (best.tags["addr:housenumber"])
