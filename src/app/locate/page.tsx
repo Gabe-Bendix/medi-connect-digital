@@ -1,8 +1,5 @@
 "use client";
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-"use client";
 
 import { useState, useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
