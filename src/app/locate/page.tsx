@@ -1,16 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
 import { useState, useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import styles from "./page.module.css";
 
-// Helper to recenter map when coords change
-function Recenter({ lat, lng }: { lat: number; lng: number }) {
+// 1) Recenter now also captures the map instance
+function Recenter({
+  lat,
+  lng,
+  mapRef,
+}: {
+  lat: number;
+  lng: number;
+  mapRef: React.MutableRefObject<any>;
+}) {
   const map = useMap();
   useEffect(() => {
-    map.setView([lat, lng], 14);
-  }, [lat, lng, map]);
+    mapRef.current = map; // capture map instance
+    map.setView([lat, lng], 14); // recenter
+  }, [lat, lng, map, mapRef]);
   return null;
 }
 
@@ -67,7 +77,6 @@ export default function LocatePage() {
       );
       out center;
     `;
-
     fetch("https://overpass-api.de/api/interpreter", {
       method: "POST",
       headers: {
@@ -84,7 +93,7 @@ export default function LocatePage() {
           return;
         }
 
-        // Haversine to pick closest
+        // Haversine distance
         const toRad = (d: number) => (d * Math.PI) / 180;
         function dist(a: [number, number], b: [number, number]) {
           const R = 6371e3;
@@ -99,21 +108,18 @@ export default function LocatePage() {
           return R * c;
         }
 
-        // 1) Define the shape for our “best” candidate
+        // Typing for best
         type PharmacyBest = {
           coord: [number, number];
           tags: any;
         };
-
-        // 2) Initialize with that type (or null)
         let best: PharmacyBest | null = null;
 
-        // 3) Use for…of so TS can narrow best inside the loop
+        // for…of so TS can narrow best
         for (const el of elems as any[]) {
           const coord: [number, number] = el.lat
             ? [el.lat, el.lon]
             : [el.center.lat, el.center.lon];
-
           if (!best || dist(userPos, coord) < dist(userPos, best.coord)) {
             best = { coord, tags: el.tags };
           }
@@ -123,7 +129,7 @@ export default function LocatePage() {
           setPharmaPos(best.coord);
           setPharmaName(best.tags.name || "Unnamed Pharmacy");
 
-          // reconstruct address if possible
+          // reconstruct address
           const parts: string[] = [];
           if (best.tags["addr:housenumber"])
             parts.push(best.tags["addr:housenumber"]);
@@ -149,17 +155,19 @@ export default function LocatePage() {
       {/* Map box */}
       <div className={styles.MapBox}>
         <MapContainer
-          whenCreated={(map) => (mapRef.current = map)}
           center={userPos}
           zoom={14}
           scrollWheelZoom={false}
           style={{ height: "100%", width: "100%" }}
         >
-          <Recenter lat={userPos[0]} lng={userPos[1]} />
+          <Recenter lat={userPos[0]} lng={userPos[1]} mapRef={mapRef} />
+
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
           <Marker position={userPos}>
             <Popup>You are here</Popup>
           </Marker>
+
           <Marker position={pharmaPos}>
             <Popup>{pharmaName}</Popup>
           </Marker>
