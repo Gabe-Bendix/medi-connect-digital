@@ -1,39 +1,43 @@
+// src/app/locate/page.tsx
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useState, useEffect, useRef } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import styles from "./page.module.css";
 
-// 1) Recenter now also captures the map instance
-function Recenter({
-  lat,
-  lng,
-  mapRef,
-}: {
-  lat: number;
-  lng: number;
-  mapRef: React.MutableRefObject<any>;
-}) {
-  const map = useMap();
-  useEffect(() => {
-    mapRef.current = map; // capture map instance
-    map.setView([lat, lng], 14); // recenter
-  }, [lat, lng, map, mapRef]);
-  return null;
-}
+// We'll hold the React-Leaflet exports here once loaded
+type RLModule = {
+  MapContainer: any;
+  TileLayer: any;
+  Marker: any;
+  Popup: any;
+  useMap: any;
+};
 
 export default function LocatePage() {
+  const [RL, setRL] = useState<RLModule | null>(null);
   const [address, setAddress] = useState<string | null>(null);
   const [userPos, setUserPos] = useState<[number, number] | null>(null);
   const [pharmaPos, setPharmaPos] = useState<[number, number] | null>(null);
   const [pharmaName, setPharmaName] = useState<string | null>(null);
   const [pharmaAddress, setPharmaAddress] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-
   const mapRef = useRef<any>(null);
 
-  // 1) Load saved address
+  // ① Dynamically import react-leaflet *only* in the browser
+  useEffect(() => {
+    import("react-leaflet").then((mod) => {
+      setRL({
+        MapContainer: mod.MapContainer,
+        TileLayer: mod.TileLayer,
+        Marker: mod.Marker,
+        Popup: mod.Popup,
+        useMap: mod.useMap,
+      });
+    });
+  }, []);
+
+  // ② Load saved address
   useEffect(() => {
     const saved = localStorage.getItem("mediConnectAddress");
     if (!saved) {
@@ -42,7 +46,7 @@ export default function LocatePage() {
     setAddress(saved);
   }, []);
 
-  // 2) Geocode via Nominatim
+  // ③ Geocode via Nominatim
   useEffect(() => {
     if (!address) return;
     fetch(
@@ -63,11 +67,10 @@ export default function LocatePage() {
       .catch(() => setError("⚠️ Geocoding failed."));
   }, [address]);
 
-  // 3) Query Overpass for nearby pharmacies
+  // ④ Query Overpass for pharmacies
   useEffect(() => {
     if (!userPos) return;
     const [lat, lon] = userPos;
-
     const query = `
       [out:json][timeout:25];
       (
@@ -92,14 +95,12 @@ export default function LocatePage() {
           return;
         }
 
-        // Haversine distance
+        // Haversine distance helper
         const toRad = (d: number) => (d * Math.PI) / 180;
         function dist(a: [number, number], b: [number, number]) {
           const R = 6371e3;
-          const φ1 = toRad(a[0]),
-            φ2 = toRad(b[0]);
-          const Δφ = toRad(b[0] - a[0]),
-            Δλ = toRad(b[1] - a[1]);
+          const φ1 = toRad(a[0]), φ2 = toRad(b[0]);
+          const Δφ = toRad(b[0] - a[0]), Δλ = toRad(b[1] - a[1]);
           const x =
             Math.sin(Δφ / 2) ** 2 +
             Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) ** 2;
@@ -107,14 +108,9 @@ export default function LocatePage() {
           return R * c;
         }
 
-        // Typing for best
-        type PharmacyBest = {
-          coord: [number, number];
-          tags: any;
-        };
+        type PharmacyBest = { coord: [number, number]; tags: any };
         let best: PharmacyBest | null = null;
 
-        // for…of so TS can narrow best
         for (const el of elems as any[]) {
           const coord: [number, number] = el.lat
             ? [el.lat, el.lon]
@@ -127,8 +123,6 @@ export default function LocatePage() {
         if (best) {
           setPharmaPos(best.coord);
           setPharmaName(best.tags.name || "Unnamed Pharmacy");
-
-          // reconstruct address
           const parts: string[] = [];
           if (best.tags["addr:housenumber"])
             parts.push(best.tags["addr:housenumber"]);
@@ -142,16 +136,36 @@ export default function LocatePage() {
       .catch(() => setError("⚠️ Pharmacy lookup failed."));
   }, [userPos]);
 
+  // ⑤ Show loader or error until both RL and coords are ready
   if (error) {
     return <div className={styles.warning}>{error}</div>;
   }
-  if (!userPos || !pharmaPos) {
+  if (!RL || !userPos || !pharmaPos) {
     return <div className={styles.warning}>Loading map…</div>;
   }
 
+  // ⑥ Pull the dynamically-loaded components
+  const { MapContainer, TileLayer, Marker, Popup, useMap } = RL;
+
+  // Helper to recenter + capture map instance
+  function Recenter({
+    lat,
+    lng,
+  }: {
+    lat: number;
+    lng: number;
+  }) {
+    const map = useMap();
+    useEffect(() => {
+      mapRef.current = map;
+      map.setView([lat, lng], 14);
+    }, [lat, lng, map]);
+    return null;
+  }
+
+  // ⑦ Final render
   return (
     <div className={styles.MainContainer}>
-      {/* Map box */}
       <div className={styles.MapBox}>
         <MapContainer
           center={userPos}
@@ -159,21 +173,16 @@ export default function LocatePage() {
           scrollWheelZoom={false}
           style={{ height: "100%", width: "100%" }}
         >
-          <Recenter lat={userPos[0]} lng={userPos[1]} mapRef={mapRef} />
-
+          <Recenter lat={userPos[0]} lng={userPos[1]} />
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-
           <Marker position={userPos}>
             <Popup>You are here</Popup>
           </Marker>
-
           <Marker position={pharmaPos}>
             <Popup>{pharmaName}</Popup>
           </Marker>
         </MapContainer>
       </div>
-
-      {/* Pharmacy info box */}
       <div className={styles.InfoBox}>
         <p className={styles.pharmaLabel}>Closest open pharmacy is:</p>
         <h2 className={styles.infoTitle}>{pharmaName}</h2>
