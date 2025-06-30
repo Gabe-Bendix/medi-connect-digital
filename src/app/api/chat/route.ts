@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 // src/app/api/chat/route.ts
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
@@ -68,7 +66,7 @@ Then append the disclaimer and end.
 
   const chatMessages = [
     { role: "system", content: SYSTEM_PROMPT.trim() },
-    ...history.map((m: any) => ({
+    ...history.map((m: { from: string; text: string }) => ({
       role: m.from === "user" ? "user" : "assistant",
       content: m.text,
     })),

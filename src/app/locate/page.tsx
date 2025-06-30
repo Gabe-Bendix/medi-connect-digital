@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -9,7 +11,7 @@ function Recenter({ lat, lng }: { lat: number; lng: number }) {
   const map = useMap();
   useEffect(() => {
     map.setView([lat, lng], 14);
-  }, [lat, lng]);
+  }, [lat, lng, map]);
   return null;
 }
 
@@ -42,7 +44,7 @@ export default function LocatePage() {
       { headers: { "User-Agent": "MediConnectDigital/1.0" } }
     )
       .then((r) => r.json())
-      .then((data: any[]) => {
+      .then((data: { lat: string; lon: string }[]) => {
         if (data.length === 0) {
           setError("⚠️ Could not geocode that address.");
           return;
