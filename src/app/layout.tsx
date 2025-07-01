@@ -48,7 +48,7 @@ export default function RootLayout({
               <div className={styles.header}>
                 <div className={styles.LogoTitleMoto}>
                   <Image
-                    src="public/images/logoFavicon.png"
+                    src="images/logoFavicon.png"
                     alt="Medi Connect Digital Logo"
                     width={40} // change to your desired display width
                     height={40} // change to your desired display height
